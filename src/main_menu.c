@@ -43,18 +43,18 @@ void app_init(void) {
    frame_thick = screen_min_dim*FRAME_THICK_SCALE;
    title_font_size = screen_min_dim*TITLE_FONT_SCALE;
 
-   title_font = LoadFontEx("fonts/Montserrat-Medium.ttf", 64, NULL, 0);
+   title_font = LoadFontEx("res/fonts/Montserrat-Medium.ttf", 64, NULL, 0);
    SetTextureFilter(title_font.texture, TEXTURE_FILTER_BILINEAR);
 
    items[0] = (Item){
       .title = "Breakout",
-      .cover = LoadTexture("covers/breakout.png"),
+      .cover = LoadTexture("res/covers/breakout.png"),
       .app_path = "./breakout.so",
    };
 
    items[1] = (Item){
       .title = "Snake",
-      .cover = LoadTexture("covers/breakout.png"),
+      .cover = LoadTexture("res/covers/breakout.png"),
       .app_path = "./snake.so",
    };
 }

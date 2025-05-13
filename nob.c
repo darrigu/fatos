@@ -4,8 +4,7 @@
 
 #define SRC_FOLDER "src/"
 #define BUILD_FOLDER "build/"
-#define FONTS_FOLDER "fonts/"
-#define COVERS_FOLDER "covers/"
+#define RES_FOLDER "res/"
 
 const char* app_names[] = {
    "main_menu",
@@ -52,8 +51,7 @@ int main(int argc, char** argv) {
    NOB_GO_REBUILD_URSELF(argc, argv);
 
    if (!mkdir_if_not_exists(BUILD_FOLDER)) return 1;
-   if (!copy_directory_recursively(FONTS_FOLDER, BUILD_FOLDER FONTS_FOLDER)) return 1;
-   if (!copy_directory_recursively(COVERS_FOLDER, BUILD_FOLDER COVERS_FOLDER)) return 1;
+   if (!copy_directory_recursively(RES_FOLDER, BUILD_FOLDER RES_FOLDER)) return 1;
 
    Cmd cmd = {0};
    if (!build_fatos(&cmd)) return 1;
