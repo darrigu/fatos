@@ -54,18 +54,17 @@ void app_update(void) {
    float frame_time = GetFrameTime();
 
    float proj_nx = proj_x + proj_dx*PROJ_SPEED*frame_time;
-   if (proj_nx < 0.0f || proj_nx + proj_size > screen_width) {
+   if (proj_nx < 0.0f || proj_nx + proj_size > screen_width || CheckCollisionRecs((Rectangle){proj_nx, proj_y, proj_size, proj_size}, (Rectangle){pad_x, pad_y, pad_len, pad_thick})) {
       proj_dx *= -1.0f;
       proj_nx = proj_x + proj_dx*PROJ_SPEED*frame_time;
    }
+   proj_x = proj_nx;
 
    float proj_ny = proj_y + proj_dy*PROJ_SPEED*frame_time;
-   if (proj_ny < 0.0f || proj_ny + proj_size > screen_height) {
+   if (proj_ny < 0.0f || proj_ny + proj_size > screen_height || CheckCollisionRecs((Rectangle){proj_x, proj_ny, proj_size, proj_size}, (Rectangle){pad_x, pad_y, pad_len, pad_thick})) {
       proj_dy *= -1.0f;
       proj_ny = proj_y + proj_dy*PROJ_SPEED*frame_time;
    }
-
-   proj_x = proj_nx;
    proj_y = proj_ny;
 
    float pad_dx = 0.0f;
@@ -73,10 +72,6 @@ void app_update(void) {
    if (IsKeyDown(KEY_RIGHT)) pad_dx += 1.0f;
 
    pad_x += pad_dx*PAD_SPEED*frame_time;
-
-   if (pad_x <= proj_x && proj_x < pad_x + pad_len) {
-   
-   }
 }
 
 void app_render(void)
