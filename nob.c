@@ -60,5 +60,11 @@ int main(int argc, char** argv) {
       if (!build_app(&cmd, app_names[i])) return 1;
    }
 
+   if (argc > 1 && strcmp(argv[1], "run") == 0) {
+      if (!set_current_dir(BUILD_FOLDER)) return 1;
+      cmd_append(&cmd, "./fatos");
+      if (!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+   }
+
    return 0;
 }
