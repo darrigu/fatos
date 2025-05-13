@@ -32,7 +32,7 @@ float frame_thick;
 int selected;
 float screen_offset;
 
-void app_init(void) {
+void handle_resize(void) {
    screen_width = GetScreenWidth();
    screen_height = GetScreenHeight();
    screen_min_dim = MIN(screen_width, screen_height);
@@ -42,6 +42,10 @@ void app_init(void) {
    frame_gap = screen_min_dim*FRAME_GAP_SCALE;
    frame_thick = screen_min_dim*FRAME_THICK_SCALE;
    title_font_size = screen_min_dim*TITLE_FONT_SCALE;
+}
+
+void app_init(void) {
+   handle_resize();
 
    title_font = LoadFontEx("res/fonts/Montserrat-Medium.ttf", 64, NULL, 0);
    SetTextureFilter(title_font.texture, TEXTURE_FILTER_BILINEAR);
@@ -67,6 +71,8 @@ void app_deinit(void) {
 }
 
 void app_update(App* current_app) {
+   if (IsWindowResized()) handle_resize();
+
    if (IsKeyPressed(KEY_RIGHT)) selected = MIN(selected + 1, ITEMS_COUNT - 1);
    if (IsKeyPressed(KEY_LEFT)) selected = MAX(selected - 1, 0);
 

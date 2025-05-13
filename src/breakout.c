@@ -21,26 +21,33 @@ float pad_x;
 float pad_y;
 bool paused;
 
-void app_init(void) {
+void handle_resize(void) {
    screen_width = GetScreenWidth();
    screen_height = GetScreenHeight();
    screen_min_dim = MIN(screen_width, screen_height);
 
    proj_size = screen_min_dim*PROJ_SIZE_SCALE;
-   proj_x = 100.0f;
-   proj_y = 100.0f;
-   proj_dx = 1.0f;
-   proj_dy = 1.0f;
    pad_len = screen_width*PAD_LEN_SCALE;
    pad_thick = screen_height*PAD_THICK_SCALE;
    pad_x = screen_width/2.0f - pad_len/2.0f;
    pad_y = screen_height - pad_thick - screen_height*0.1f;
+}
+
+void app_init(void) {
+   handle_resize();
+
+   proj_x = 100.0f;
+   proj_y = 100.0f;
+   proj_dx = 1.0f;
+   proj_dy = 1.0f;
    paused = false;
 }
 
 void app_deinit(void) {}
 
 void app_update(void) {
+   if (IsWindowResized()) handle_resize();
+
    if (IsKeyPressed(KEY_SPACE)) paused = !paused;
    if (paused) return;
 
