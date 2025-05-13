@@ -71,7 +71,7 @@ void app_update(void) {
    if (IsKeyDown(KEY_LEFT)) pad_dx -= 1.0f;
    if (IsKeyDown(KEY_RIGHT)) pad_dx += 1.0f;
 
-   pad_x += pad_dx*PAD_SPEED*frame_time;
+   pad_x = MIN(screen_width - pad_len, MAX(0, pad_x + pad_dx*PAD_SPEED*frame_time));
 }
 
 void app_render(void)
