@@ -38,7 +38,7 @@ float title_font_size;
 Font title_font;
 float item_size;
 float item_gap;
-#define ITEMS_COUNT 2
+#define ITEMS_COUNT 3
 Item items[ITEMS_COUNT];
 float frame_gap;
 float frame_thick;
@@ -76,6 +76,11 @@ void app_init(void) {
       .title = "SNAKE",
       .cover = LoadTexture("res/covers/snake.png"),
       .app_path = "./snake.so",
+   };
+   items[2] = (Item){
+      .title = "RUST TEST",
+      .cover = LoadTexture("res/covers/snake.png"),
+      .app_path = "./rust_test.so",
    };
 }
 
