@@ -10,7 +10,7 @@
 #define PROJ_SPEED 500.0f
 #define TARGET_WIDTH_SCALE PAD_LEN_SCALE
 #define TARGET_HEIGHT_SCALE PAD_THICK_SCALE
-#define TARGET_PAD_SCALE 0.05f
+#define TARGET_PAD_SCALE 0.02f
 #define TARGETS_CAP 128
 
 typedef struct {
@@ -63,13 +63,22 @@ void handle_resize(void) {
    target_pad = screen_width*TARGET_PAD_SCALE;
 
    targets_pool_count = 0;
-   #define TARGET(X, Y) targets_pool[targets_pool_count].x = (X); targets_pool[targets_pool_count++].y = (Y);
-   TARGET(100.0f, 100.0f);
-   TARGET(100.0f + target_width + target_pad, 100.0f);
-   TARGET(100.0f + (target_width + target_pad)*2, 100.0f);
-   TARGET(100.0f + (target_width + target_pad)*3, 100.0f);
-   TARGET(100.0f + (target_width + target_pad)*4, 100.0f);
-   #undef TARGET
+   size_t rows = 4;
+   size_t cols = 6;
+
+   float grid_width = cols*target_width + (cols - 1)*target_pad;
+   float grid_height = rows*target_height + (rows - 1)*target_pad;
+
+   float start_x = (screen_width - grid_width)/2.0f;
+   float start_y = screen_height*0.1f;
+
+   for (size_t i = 0; i < rows; i++) {
+       for (size_t j = 0; j < cols; j++) {
+           targets_pool[targets_pool_count].x = start_x + j * (target_width + target_pad);
+           targets_pool[targets_pool_count].y = start_y + i * (target_height + target_pad);
+           targets_pool_count++;
+       }
+   }
 }
 
 void app_init(void) {
