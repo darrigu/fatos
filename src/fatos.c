@@ -3,8 +3,9 @@
 #include <raylib.h>
 #include "./app.h"
 
-#define SCREEN_WIDTH 900
-#define SCREEN_HEIGHT 600
+#define SCREEN_FACTOR 64
+#define SCREEN_WIDTH (SCREEN_FACTOR*16)
+#define SCREEN_HEIGHT (SCREEN_FACTOR*9)
 
 int main(void) {
    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
