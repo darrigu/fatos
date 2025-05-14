@@ -29,6 +29,7 @@ float pad_len;
 float pad_thick;
 float pad_x;
 float pad_y;
+float pad_dx;
 float proj_size;
 float proj_x;
 float proj_y;
@@ -72,6 +73,7 @@ void handle_resize(void) {
 }
 
 void app_init(void) {
+   pad_dx = 0.0f;
    proj_dx = 1.0f;
    proj_dy = 1.0f;
    started = false;
@@ -89,14 +91,20 @@ void app_deinit(void) {}
 void app_update(void) {
    if (IsWindowResized()) handle_resize();
 
-   float pad_dx = 0.0f;
+   pad_dx = 0.0f;
    if (IsKeyDown(KEY_LEFT)) {
       pad_dx -= 1.0f;
-      started = true;
+      if (!started) {
+         proj_dx = -1.0f;
+         started = true;
+      }
    }
    if (IsKeyDown(KEY_RIGHT)) {
       pad_dx += 1.0f;
-      started = true;
+      if (!started) {
+         proj_dx = 1.0f;
+         started = true;
+      }
    }
 
    if (IsKeyPressed(KEY_SPACE)) paused = !paused;
@@ -123,7 +131,13 @@ void app_update(void) {
    proj_x = proj_nx;
 
    float proj_ny = proj_y + proj_dy*PROJ_SPEED*frame_time;
-   bool cond_y = proj_ny < 0.0f || proj_ny + proj_size > screen_height || CheckCollisionRecs((Rectangle){proj_x, proj_ny, proj_size, proj_size}, (Rectangle){pad_x, pad_y, pad_len, pad_thick});
+   bool cond_y = proj_ny < 0.0f || proj_ny + proj_size > screen_height;
+   if (!cond_y) {
+       cond_y = cond_y || CheckCollisionRecs((Rectangle){proj_x, proj_ny, proj_size, proj_size}, (Rectangle){pad_x, pad_y, pad_len, pad_thick});
+       if (cond_y && pad_dx != 0.0f) {
+          proj_dx = pad_dx;
+       }
+   }
    for (size_t i = 0; i < targets_pool_count; i++) {
       if (cond_y) break;
       Target* target = &targets_pool[i];
