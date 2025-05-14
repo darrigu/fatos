@@ -3,6 +3,8 @@
 #include <raylib.h>
 #include "app.h"
 
+#define ROWS 4
+#define COLS 6
 #define PAD_LEN_SCALE 0.1f
 #define PAD_THICK_SCALE PROJ_SIZE_SCALE
 #define PAD_SPEED PROJ_SPEED
@@ -10,7 +12,7 @@
 #define PROJ_SPEED 500.0f
 #define TARGET_WIDTH_SCALE PAD_LEN_SCALE
 #define TARGET_HEIGHT_SCALE PAD_THICK_SCALE
-#define TARGET_PAD_SCALE 0.02f
+#define TARGET_PADDING_SCALE 0.02f
 #define TARGETS_CAP 128
 
 typedef struct {
@@ -60,20 +62,18 @@ void handle_resize(void) {
 
    target_width = screen_width*TARGET_WIDTH_SCALE;
    target_height = screen_height*TARGET_HEIGHT_SCALE;
-   target_pad = screen_width*TARGET_PAD_SCALE;
+   target_pad = screen_width*TARGET_PADDING_SCALE;
 
    targets_pool_count = 0;
-   size_t rows = 4;
-   size_t cols = 6;
 
-   float grid_width = cols*target_width + (cols - 1)*target_pad;
-   float grid_height = rows*target_height + (rows - 1)*target_pad;
+   float grid_width = COLS*target_width + (COLS - 1)*target_pad;
+   float grid_height = ROWS*target_height + (ROWS - 1)*target_pad;
 
    float start_x = (screen_width - grid_width)/2.0f;
    float start_y = screen_height*0.1f;
 
-   for (size_t i = 0; i < rows; i++) {
-       for (size_t j = 0; j < cols; j++) {
+   for (size_t i = 0; i < ROWS; i++) {
+       for (size_t j = 0; j < COLS; j++) {
            targets_pool[targets_pool_count].x = start_x + j * (target_width + target_pad);
            targets_pool[targets_pool_count].y = start_y + i * (target_height + target_pad);
            targets_pool_count++;
