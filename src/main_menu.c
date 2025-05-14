@@ -79,6 +79,14 @@ void app_init(void) {
    };
 }
 
+void app_deinit() {
+   UnloadShader(bg);
+   UnloadFont(title_font);
+   for (size_t i = 0; i < ITEMS_COUNT; i++) {
+      UnloadTexture(items[i].cover);
+   }
+}
+
 void app_update(App* current_app) {
    if (IsWindowResized()) handle_resize();
 

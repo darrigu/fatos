@@ -18,6 +18,7 @@ int main(void) {
    main_menu.init();
 
    while (!WindowShouldClose()) {
+      // TODO: find a cool way to prevent exitting from main menu
       if (IsKeyPressed(KEY_ESCAPE)) {
          current_app.deinit();
          current_app = main_menu;
