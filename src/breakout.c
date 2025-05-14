@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stddef.h>
 
 #include <raylib.h>
@@ -8,12 +9,22 @@
 #define PAD_LEN_SCALE 0.1f
 #define PAD_THICK_SCALE PROJ_SIZE_SCALE
 #define PAD_SPEED PROJ_SPEED
+#define PAD_COLOR ((Color){100, 255, 255, 255})
 #define PROJ_SIZE_SCALE 0.025f
 #define PROJ_SPEED 500.0f
+#define PROJ_COLOR ((Color){255, 255, 255, 255})
 #define TARGET_WIDTH_SCALE PAD_LEN_SCALE
 #define TARGET_HEIGHT_SCALE PAD_THICK_SCALE
 #define TARGET_PADDING_SCALE 0.02f
 #define TARGETS_CAP 128
+#define TARGET_COLORS { \
+   ((Color){255, 100, 100, 255}), \
+   ((Color){100, 255, 100, 255}), \
+   ((Color){100, 100, 255, 255}), \
+   ((Color){255, 255, 100, 255})  \
+}
+#define GLOW_SIZE 0.015f
+#define PULSE_SPEED 3.0f
 
 typedef struct {
    float x;
@@ -67,7 +78,6 @@ void handle_resize(void) {
    targets_pool_count = 0;
 
    float grid_width = COLS*target_width + (COLS - 1)*target_pad;
-   float grid_height = ROWS*target_height + (ROWS - 1)*target_pad;
 
    float start_x = (screen_width - grid_width)/2.0f;
    float start_y = screen_height*0.1f;
@@ -163,14 +173,52 @@ void app_update(void) {
 }
 
 void app_render(void) {
-   ClearBackground(GetColor(0x000000FF));
+   ClearBackground((Color){10, 0, 20, 255});
 
-   DrawRectangleRec((Rectangle){pad_x, pad_y - pad_thick/2.0f, pad_len, pad_thick}, GetColor(0xFF0000FF));
-   DrawRectangleRec((Rectangle){proj_x, proj_y, proj_size, proj_size}, GetColor(0xFFFFFFFF));
+   float pulse = (sinf(GetTime()*PULSE_SPEED)*0.3f + 0.7f);
+   float glow_size = screen_min_dim*GLOW_SIZE;
+
+   DrawRectangleRec(
+      (Rectangle){pad_x - glow_size, pad_y - glow_size, 
+                  pad_len + glow_size*2.0f, pad_thick + glow_size*2.0f},
+      ColorAlpha(PAD_COLOR, 0.3f*pulse)
+   );
+
+   DrawCircle(proj_x + proj_size/2.0f, proj_y + proj_size/2.0f, 
+              proj_size + glow_size, 
+              ColorAlpha(PROJ_COLOR, 0.4f));
+
+   DrawRectangleRounded(
+      (Rectangle){pad_x, pad_y, pad_len, pad_thick}, 
+      0.8f, 10, PAD_COLOR);
+   DrawCircleV(
+      (Vector2){proj_x + proj_size/2.0f, proj_y + proj_size/2.0f},
+      proj_size/2.0f, PROJ_COLOR);
+
+   Color target_colors[ROWS] = TARGET_COLORS;
 
    for (size_t i = 0; i < targets_pool_count; i++) {
       Target target = targets_pool[i];
       if (target.dead) continue;
-      DrawRectangleRec((Rectangle){target.x, target.y - target_height/2.0f, target_width, target_height}, GetColor(0x00FF00FF));
+
+      int row = i/COLS;
+      Color baseColor = target_colors[row%ROWS];
+        
+      DrawRectangleRec(
+         (Rectangle){target.x - glow_size/2.0f, target.y - glow_size/2.0f,
+                     target_width + glow_size, target_height + glow_size},
+         ColorAlpha(baseColor, 0.3f)
+      );
+        
+      DrawRectangleRounded(
+         (Rectangle){target.x, target.y, target_width, target_height},
+         0.3f, 5, baseColor);
+   }
+
+   for (int x = 0; x < screen_width; x += screen_width/20.0f) {
+      DrawLine(x, 0, x, screen_height, ColorAlpha(WHITE, 0.05f));
+   }
+   for (int y = 0; y < screen_height; y += screen_height/20.0f) {
+      DrawLine(0, y, screen_width, y, ColorAlpha(WHITE, 0.05f));
    }
 }
